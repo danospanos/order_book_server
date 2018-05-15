@@ -1,0 +1,35 @@
+	server.c
+author Daniel Stasek
+
+- Compile as 
+	gcc server.c server_client_funcs.c server_client_funcs.h -o server clientdta.c clientdta.h -pthread sqlite_calls.c sqlite_calls.h json_funcs.h json_funcs.c jsmn.h jsmn.c -lsqlite3
+
+- Runs as 
+	./server <port_for_private_communication> <port_for_public_communication> 
+
+- Potreba sqlite3
+	- go to: http://www.sqlite.org/download.html
+	- download: sqlite-autoconf-*.tar.gz
+	- installation guide
+		$tar xvfz sqlite-autoconf-3130000.tar.gz
+		$cd sqlite-autoconf-3130000
+		$./configure --prefix=/usr/local
+		$make
+		$sudo make install
+
+- Kod komentovan v syntax pro doxygen -> mozny export pri pouziti doxygenu do formatu html.
+
+- Logovani jak standardniho vystupu tak standadrniho chyboveho vystupu. 
+	stdout server 1> stdout.log
+	stderr: server 2> error.log
+
+- Ceny jsou typu double a jsou tak i posilany do verejneho kanalu, tudiz prosim o malou zmenu 
+v client-datastream.py a to:
+	['BID'] + [ '{:d} @ {:f}'.format(qty, price) for (price, qty) in reversed(sorted(self._bid.items())) if qty ] +
+	['ASK'] + [ '{:d} @ {:f}'.format(qty, price) for (price, qty) in sorted(self._ask.items()) if qty ] +
+	['TRADES'] + [ '{time:%Y-%m-%d %H:%M:%S.%s} - {quantity:d} @ {price:f}'.format(**trade) for trade in self._trades ]
+respektive prepsani :d na :f u printu s cenou, dekuji.
+
+- Compiled under: gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4 Copyright (C) 2013
+
+
